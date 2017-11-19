@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Location Viewer</string>
+    <string name="ui_tracking">Tracking</string>
+    <string name="ui_interval">Interval</string>
+</resources>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "687695737037",
+    "firebase_url": "https://location-viewer.firebaseio.com",
+    "project_id": "location-viewer",
+    "storage_bucket": "location-viewer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687695737037:android:6e7e5b2a62a4d826",
+        "android_client_info": {
+          "package_name": "com.vijay.locationviewer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "687695737037-uav9aurojtco967gollsg0vg72sqhort.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vijay.locationviewer",
+            "certificate_hash": "e31c075b82f86f6fb83539b4b81896479ce18f35"
+          }
+        },
+        {
+          "client_id": "687695737037-l7jht025j6043kq6gdg2ikqkh8ecgsb2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd0OHhZZoio5-DMWYG_a-x4NmFLE_3UpY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "687695737037-l7jht025j6043kq6gdg2ikqkh8ecgsb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
