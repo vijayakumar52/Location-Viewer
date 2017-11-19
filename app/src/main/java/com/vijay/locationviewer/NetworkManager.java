@@ -1,41 +1,33 @@
 package com.vijay.locationviewer;
 
-import java.util.HashMap;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.HashMap;
 
 public class NetworkManager {
     private static NetworkManager networkManager = new NetworkManager();
-    public static NetworkManager getInstance(){
+
+    public static NetworkManager getInstance() {
         return networkManager;
     }
 
-    public void getRecords(AsyncTaskListener listener){
+    public void toggleTracking(boolean shouldEnable, AsyncTaskListener listener) throws JSONException {
+        String url = "https://fcm.googleapis.com/fcm/send";
 
-        String url = "https://creator.zoho.com/api/json/vehicle-tracker/view/Vehicle_Trace_Report";
-        String authToken = "6185ed36adc4f3fa03f66305cc720789";
-        String scope = "creatorapi";
+        //Headers
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "key=AIzaSyAy9NHx6ZzseG_ONRrR7jcOxyo3canPCls");
+        headers.put("Content-type", "application/json");
 
-        HashMap<String,String> postParams = new HashMap<>();
-        postParams.put("authtoken",authToken);
-        postParams.put("scope",scope);
-        postParams.put("raw","true");
-        postParams.put("zc_ownername","vijayakumar12");
+        JSONObject msgData = new JSONObject();
+        msgData.put("tracking", String.valueOf(shouldEnable));
 
-        new NetworkRequest(url,postParams,listener).execute();
+        JSONObject postParams = new JSONObject();
+        postParams.put("data",msgData);
+        postParams.put("to", "cef1xyvusQU:APA91bFK3YIZLDOmJnIE_wbKcm4D0MlgEBz8x7Xw6pafpSYq1eT_6kwYIFTgWPxvRRXLiZG5hBpnnytZARtbqmAWyB-lDoPk1Cj2cJ7LXw1Cjh8_9yCqczVHcUn0haxUWys7dWrN16DY");
 
+        NetworkRequest networkManager = new NetworkRequest(url, headers, postParams.toString(), listener);
+        networkManager.execute();
     }
-
-    public void deleteRecord(AsyncTaskListener listener){
-        String url = "https://creator.zoho.com/api/vijayakumar12/json/vehicle-tracker/form/Vehicle_Trace/record/delete/";
-        String authToken = "6185ed36adc4f3fa03f66305cc720789";
-        String scope = "creatorapi";
-
-        HashMap<String,String> postParams = new HashMap<>();
-        postParams.put("authtoken",authToken);
-        postParams.put("scope",scope);
-        postParams.put("criteria","time != 0");
-
-        new NetworkRequest(url,postParams,listener).execute();
-    }
-
 }

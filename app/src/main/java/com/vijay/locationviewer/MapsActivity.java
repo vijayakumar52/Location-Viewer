@@ -112,7 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         };
-        NetworkManager.getInstance().getRecords(asyncTaskListener);
+        //NetworkManager.getInstance().getRecords(asyncTaskListener);
     }
 
     private void drawCoordinates() throws JSONException {

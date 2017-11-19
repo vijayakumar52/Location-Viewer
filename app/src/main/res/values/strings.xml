@@ -2,4 +2,8 @@
     <string name="app_name">Location Viewer</string>
     <string name="ui_tracking">Tracking</string>
     <string name="ui_interval">Interval</string>
+    <string name="notification_sent">Notification sent!</string>
+    <string name="notification_failed">Unable to send notification!</string>
+    <string name="notification_error">Error occurred while sending notification</string>
+    <string name="response_null">Response null</string>
 </resources>
