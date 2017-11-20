@@ -42,7 +42,7 @@ public class NetworkManager {
         networkManager.execute();
     }
 
-    public void setInteval(Long timeInMillis, AsyncTaskListener listener) throws JSONException {
+    public void setInterval(Long timeInMillis, AsyncTaskListener listener) throws JSONException {
         String url = "https://fcm.googleapis.com/fcm/send";
 
         HashMap<String, String> header = getDefaultHeader();
@@ -55,4 +55,5 @@ public class NetworkManager {
         NetworkRequest networkManager = new NetworkRequest(url, header, postParams.toString(), listener);
         networkManager.execute();
     }
+
 }

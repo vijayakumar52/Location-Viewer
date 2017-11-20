@@ -54,4 +54,18 @@
         android:text="@string/ui_change_interval"/>
 
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_light"
+        android:textColor="@android:color/white"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:id="@+id/view_location"
+        android:text="@string/ui_view_location"
+        />
+
+
 </LinearLayout>

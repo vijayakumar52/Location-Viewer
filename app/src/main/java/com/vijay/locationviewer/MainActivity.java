@@ -1,5 +1,6 @@
 package com.vijay.locationviewer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
@@ -22,13 +23,14 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
     SwitchCompat switchCompat;
     AppCompatEditText intervalBox;
     Button changeIntervalButton;
+    Button viewLocation;
 
     DatabaseReference toggleReference;
     DatabaseReference timeIntervalReference;
     AsyncTaskListener firebaseCallback = new AsyncTaskListener() {
         @Override
         public void onTaskCompleted(String response, String extras) {
-            Logger.d(TAG, "Firebase notification response : "+ response);
+            Logger.d(TAG, "Firebase notification response : " + response);
             if (response != null) {
                 try {
                     JSONObject serverResponse = new JSONObject(response);
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         switchCompat = findViewById(R.id.tracking_switch);
         intervalBox = findViewById(R.id.interval_box);
         changeIntervalButton = findViewById(R.id.change_interval);
+        viewLocation = findViewById(R.id.view_location);
 
 
         switchCompat.setOnClickListener(new View.OnClickListener() {
@@ -85,13 +88,22 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
                 }
                 if (timeInMillis != null) {
                     try {
-                        NetworkManager.getInstance().setInteval(timeInMillis, firebaseCallback);
+                        NetworkManager.getInstance().setInterval(timeInMillis, firebaseCallback);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
+
+        viewLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mapActivity = new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(mapActivity);
+            }
+        });
+
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         toggleReference = database.getReference(Constants.TRACKING_STATUS);
