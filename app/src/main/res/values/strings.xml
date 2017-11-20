@@ -6,4 +6,6 @@
     <string name="notification_failed">Unable to send notification!</string>
     <string name="notification_error">Error occurred while sending notification</string>
     <string name="response_null">Response null</string>
+    <string name="ui_change_interval">Change interval</string>
+    <string name="toast_no_format_exception">Please enter a valid time you bitch</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.vijay.locationviewer;
 
+import com.vijay.locationviewer.firebase.Constants;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,22 +14,45 @@ public class NetworkManager {
         return networkManager;
     }
 
-    public void toggleTracking(boolean shouldEnable, AsyncTaskListener listener) throws JSONException {
-        String url = "https://fcm.googleapis.com/fcm/send";
+    private JSONObject getDefaultNotificationContent(JSONObject data) throws JSONException {
+        JSONObject postParams = new JSONObject();
+        postParams.put("data", data);
+        postParams.put("to", "cef1xyvusQU:APA91bFK3YIZLDOmJnIE_wbKcm4D0MlgEBz8x7Xw6pafpSYq1eT_6kwYIFTgWPxvRRXLiZG5hBpnnytZARtbqmAWyB-lDoPk1Cj2cJ7LXw1Cjh8_9yCqczVHcUn0haxUWys7dWrN16DY");
+        return postParams;
+    }
 
-        //Headers
+    private HashMap<String, String> getDefaultHeader() {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", "key=AIzaSyAy9NHx6ZzseG_ONRrR7jcOxyo3canPCls");
         headers.put("Content-type", "application/json");
+        return headers;
+    }
+
+    public void setTracking(boolean enable, AsyncTaskListener listener) throws JSONException {
+        String url = "https://fcm.googleapis.com/fcm/send";
+
+        HashMap<String, String> header = getDefaultHeader();
 
         JSONObject msgData = new JSONObject();
-        msgData.put("tracking", String.valueOf(shouldEnable));
+        msgData.put(Constants.NOTIFICATION_SET_TRACKING, String.valueOf(enable));
 
-        JSONObject postParams = new JSONObject();
-        postParams.put("data",msgData);
-        postParams.put("to", "cef1xyvusQU:APA91bFK3YIZLDOmJnIE_wbKcm4D0MlgEBz8x7Xw6pafpSYq1eT_6kwYIFTgWPxvRRXLiZG5hBpnnytZARtbqmAWyB-lDoPk1Cj2cJ7LXw1Cjh8_9yCqczVHcUn0haxUWys7dWrN16DY");
+        JSONObject postParams = getDefaultNotificationContent(msgData);
 
-        NetworkRequest networkManager = new NetworkRequest(url, headers, postParams.toString(), listener);
+        NetworkRequest networkManager = new NetworkRequest(url, header, postParams.toString(), listener);
+        networkManager.execute();
+    }
+
+    public void setInteval(Long timeInMillis, AsyncTaskListener listener) throws JSONException {
+        String url = "https://fcm.googleapis.com/fcm/send";
+
+        HashMap<String, String> header = getDefaultHeader();
+
+        JSONObject msgData = new JSONObject();
+        msgData.put(Constants.NOTIFICATION_SET_INTERVAL, String.valueOf(timeInMillis));
+
+        JSONObject postParams = getDefaultNotificationContent(msgData);
+
+        NetworkRequest networkManager = new NetworkRequest(url, header, postParams.toString(), listener);
         networkManager.execute();
     }
 }
