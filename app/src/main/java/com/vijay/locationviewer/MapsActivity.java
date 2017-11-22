@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -30,26 +31,28 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ValueEventListener, View.OnClickListener {
     private final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
     ClusterManager<ClusterMarker> clusterManager;
-    int totalRecords = 0;
 
     DatabaseReference locationReference;
 
     Button clearHistory;
     FloatingActionButton fab;
+    TextView count;
+
+    Coordinates coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate called");
+
+        coordinates = new Coordinates();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -58,6 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         clearHistory = findViewById(R.id.remove_all);
         fab = findViewById(R.id.fab);
+        count = findViewById(R.id.count);
 
         clearHistory.setOnClickListener(this);
         fab.setOnClickListener(this);
@@ -67,6 +71,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationReference = database.getReference(Constants.HISTORY);
         locationReference.addValueEventListener(this);
         Logger.d(TAG, "locationReference event registered");
+
+        drawAllCluster();
     }
 
     @Override
@@ -102,43 +108,92 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private void removeLocations(final long count) {
-        locationReference.setValue(null);
+    private void removeLocations(long count) {
+        locationReference.setValue(null, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                ToastUtils.showToast(MapsActivity.this, getResources().getString(R.string.toast_location_cleared));
+            }
+        });
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        String key = dataSnapshot.getKey();
-        if (Constants.HISTORY.equals(key)) {
-            Object value = dataSnapshot.getValue();
-            if (value != null) {
-                try {
-                    List<Double[]> coordinates = getCoordinates(value);
-                    totalRecords = coordinates.size();
-                    LatLng position = null;
-                    if (coordinates.size() > 0) {
-                        for (int i = 0; i < coordinates.size(); i++) {
-                            Double[] locations = coordinates.get(i);
-                            LatLng latLng = new LatLng(locations[0], locations[1]);
-                            ClusterMarker marker = new ClusterMarker(latLng);
-                            clusterManager.addItem(marker);
-                            position = latLng;
-                        }
-                        clusterManager.cluster();
-                        if (position != null) {
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        List<Double[]> list = new ArrayList<>();
+        for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
+            LocationData locationData = messageSnapshot.getValue(LocationData.class);
+            if (locationData != null) {
+                Double[] coordinates = getLocationObject(locationData);
+                list.add(coordinates);
             }
         }
+        coordinates.setCoordinates(list);
+        drawAllCluster();
+
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
 
+    }
+
+    private void addChild(Object value) {
+        if (value != null) {
+            Double[] location = getLocationObject((LocationData) value);
+            if (location != null) {
+                coordinates.addCoordinate(location);
+                updateCluster(location);
+            }
+        }
+    }
+
+    private void removeChild() {
+
+    }
+
+
+    private void drawAllCluster() {
+        LatLng position = null;
+        if (clusterManager != null) {
+            clusterManager.clearItems();
+            List<Double[]> positions = coordinates.getCoordinates();
+            if (positions.size() > 0) {
+                for (int i = 0; i < positions.size(); i++) {
+                    Double[] locations = positions.get(i);
+                    LatLng latLng = new LatLng(locations[0], locations[1]);
+                    ClusterMarker marker = new ClusterMarker(latLng);
+                    clusterManager.addItem(marker);
+                    position = latLng;
+                }
+            }
+
+            clusterManager.cluster();
+            if (position != null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+            }
+        }
+        updateCount();
+
+    }
+
+
+    private void updateCluster(Double[] doubles) {
+        if (clusterManager != null) {
+            LatLng latLng = new LatLng(doubles[0], doubles[1]);
+            ClusterMarker marker = new ClusterMarker(latLng);
+            clusterManager.addItem(marker);
+
+            clusterManager.cluster();
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+        }
+        updateCount();
+    }
+
+
+    private void updateCount() {
+        count.setText("Size : " + coordinates.getCoordinates().size());
     }
 
     @Override
@@ -167,6 +222,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         clusterManager = new ClusterManager<>(this, mMap);
         mMap.setOnCameraChangeListener(clusterManager);
 
+        drawAllCluster();
+
     }
 
     private void drawCoordinates() throws JSONException {
@@ -186,20 +243,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    List<Double[]> getCoordinates(Object response) throws JSONException {
-        List<Double[]> list = new ArrayList<>();
-        if (response != null) {
-            HashMap<String, HashMap> locations = (HashMap<String, HashMap>) response;
-            for (Map.Entry<String, HashMap> entry : locations.entrySet()) {
-                HashMap<String, Double> value = entry.getValue();
-                Double[] coordinates = new Double[2];
-                coordinates[0] = value.get(Constants.LATITUDE);
-                coordinates[1] = value.get(Constants.LONGITUDE);
-                if (coordinates[0] != null && coordinates[1] != null) {
-                    list.add(coordinates);
-                }
-            }
-        }
-        return list;
+    public static Double[] getLocationObject(LocationData data) {
+        Double[] coordinates = new Double[2];
+        coordinates[0] = data.getLatitude();
+        coordinates[1] = data.getLongitude();
+        return coordinates;
     }
 }
