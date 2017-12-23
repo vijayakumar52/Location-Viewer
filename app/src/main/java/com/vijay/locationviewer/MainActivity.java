@@ -24,9 +24,11 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
     AppCompatEditText intervalBox;
     Button changeIntervalButton;
     Button viewLocation;
+    NetworkManager networkManager;
 
     DatabaseReference toggleReference;
     DatabaseReference timeIntervalReference;
+    DatabaseReference deviceTokenReference;
     AsyncTaskListener firebaseCallback = new AsyncTaskListener() {
         @Override
         public void onTaskCompleted(String response, String extras) {
@@ -69,7 +71,9 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
             @Override
             public void onClick(View v) {
                 try {
-                    NetworkManager.getInstance().setTracking(switchCompat.isChecked(), firebaseCallback);
+                    if (networkManager != null) {
+                        networkManager.setTracking(switchCompat.isChecked(), firebaseCallback);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -88,7 +92,9 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
                 }
                 if (timeInMillis != null) {
                     try {
-                        NetworkManager.getInstance().setInterval(timeInMillis, firebaseCallback);
+                        if (networkManager != null) {
+                            networkManager.setInterval(timeInMillis, firebaseCallback);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -109,8 +115,11 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         toggleReference = database.getReference(Constants.TRACKING_STATUS);
         toggleReference.addValueEventListener(this);
 
-        timeIntervalReference = database.getReference(Constants.TIME_INTERVAL);
+        timeIntervalReference = database.getReference(Constants.ALARM_INTERVAL);
         timeIntervalReference.addValueEventListener(this);
+
+        deviceTokenReference = database.getReference(Constants.DEVICE_TOKEN);
+        deviceTokenReference.addValueEventListener(this);
 
         Logger.d(TAG, "Firebase event listeners registered");
     }
@@ -128,10 +137,15 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
                     switchCompat.setChecked(false);
                 }
             }
-        } else if (Constants.TIME_INTERVAL.equals(key)) {
+        } else if (Constants.ALARM_INTERVAL.equals(key)) {
             Long timeInterval = dataSnapshot.getValue(Long.class);
             if (timeInterval != null) {
                 intervalBox.setText(String.valueOf(timeInterval));
+            }
+        } else if (Constants.DEVICE_TOKEN.equals(key)) {
+            String token = dataSnapshot.getValue(String.class);
+            if(token != null && !"".equals(token)) {
+                networkManager = new NetworkManager(token);
             }
         }
     }
@@ -148,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         Logger.d(TAG, "onDestroy called");
         toggleReference.removeEventListener(this);
         timeIntervalReference.removeEventListener(this);
+        deviceTokenReference.removeEventListener(this);
 
         Logger.d(TAG, "Firebase event listeners removed");
     }

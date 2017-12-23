@@ -68,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        locationReference = database.getReference(Constants.HISTORY);
+        locationReference = database.getReference(Constants.LOCATIONS);
         locationReference.addValueEventListener(this);
         Logger.d(TAG, "locationReference event registered");
 

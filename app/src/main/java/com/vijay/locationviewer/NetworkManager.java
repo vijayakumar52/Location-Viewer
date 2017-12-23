@@ -8,16 +8,16 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 public class NetworkManager {
-    private static NetworkManager networkManager = new NetworkManager();
+    String deviceToken;
 
-    public static NetworkManager getInstance() {
-        return networkManager;
+    public NetworkManager(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     private JSONObject getDefaultNotificationContent(JSONObject data) throws JSONException {
         JSONObject postParams = new JSONObject();
         postParams.put("data", data);
-        postParams.put("to", "cef1xyvusQU:APA91bFK3YIZLDOmJnIE_wbKcm4D0MlgEBz8x7Xw6pafpSYq1eT_6kwYIFTgWPxvRRXLiZG5hBpnnytZARtbqmAWyB-lDoPk1Cj2cJ7LXw1Cjh8_9yCqczVHcUn0haxUWys7dWrN16DY");
+        postParams.put("to", deviceToken);
         return postParams;
     }
 
@@ -34,7 +34,7 @@ public class NetworkManager {
         HashMap<String, String> header = getDefaultHeader();
 
         JSONObject msgData = new JSONObject();
-        msgData.put(Constants.NOTIFICATION_SET_TRACKING, String.valueOf(enable));
+        msgData.put(Constants.TRACKING_STATUS, String.valueOf(enable));
 
         JSONObject postParams = getDefaultNotificationContent(msgData);
 
@@ -48,7 +48,7 @@ public class NetworkManager {
         HashMap<String, String> header = getDefaultHeader();
 
         JSONObject msgData = new JSONObject();
-        msgData.put(Constants.NOTIFICATION_SET_INTERVAL, String.valueOf(timeInMillis));
+        msgData.put(Constants.ALARM_INTERVAL, String.valueOf(timeInMillis));
 
         JSONObject postParams = getDefaultNotificationContent(msgData);
 
