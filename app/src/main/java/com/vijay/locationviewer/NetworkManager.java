@@ -34,7 +34,7 @@ public class NetworkManager {
         HashMap<String, String> header = getDefaultHeader();
 
         JSONObject msgData = new JSONObject();
-        msgData.put(Constants.TRACKING_STATUS, String.valueOf(enable));
+        msgData.put(Constants.NOTIFICATION_TRACKING_STATUS, String.valueOf(enable));
 
         JSONObject postParams = getDefaultNotificationContent(msgData);
 
@@ -48,7 +48,7 @@ public class NetworkManager {
         HashMap<String, String> header = getDefaultHeader();
 
         JSONObject msgData = new JSONObject();
-        msgData.put(Constants.ALARM_INTERVAL, String.valueOf(timeInMillis));
+        msgData.put(Constants.NOTIFICATION_ALARM_INTERVAL, String.valueOf(timeInMillis));
 
         JSONObject postParams = getDefaultNotificationContent(msgData);
 
