@@ -32,6 +32,11 @@ buildscript {
         picassoDownloaderVer = "1.1.0"
         architectureComponentVer = "1.0.0"
 
+        fireabaseDatabaseVer = "11.8.0"
+        fireabaseMessagingVer = "11.8.0"
+        playServicesVer = "11.8.0"
+        mapsVer = "11.8.0"
+        mapsutilVer = "0.4"
 
         compileSdkVersion = 26
         minSdkVersion = 16
@@ -49,6 +54,17 @@ buildscript {
                 lifecycleRuntime : "android.arch.lifecycle:runtime:${architectureComponentVer}",
                 lifecycleCompiler : "android.arch.lifecycle:compiler:${architectureComponentVer}"
         ]
+
+        firebaseLib = [
+                database : "com.google.firebase:firebase-database:${fireabaseDatabaseVer}",
+                messaging : "com.google.firebase:firebase-messaging:${fireabaseMessagingVer}"
+        ]
+        playServicesLib = [
+                location : "com.google.android.gms:play-services-location:${playServicesVer}",
+                maps : "com.google.android.gms:play-services-maps:${mapsVer}",
+                mapsutils : "com.google.maps.android:android-maps-utils:${mapsutilVer}"
+        ]
+
 
         extLib = [
                 smoothProgressBar  : "com.github.castorflex.smoothprogressbar:library:${smoothProgressBarVer}",

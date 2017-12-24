@@ -23,10 +23,10 @@ dependencies {
     compile getRootProject().ext.extLib.okhttp
     compile getRootProject().ext.extLib.materialDialog
     compile getRootProject().ext.supportLib.design
+    compile getRootProject().ext.playServicesLib.mapsutils
+    compile getRootProject().ext.playServicesLib.maps
+    compile getRootProject().ext.firebaseLib.database
     compile project(':Android-Utils')
-    compile 'com.google.maps.android:android-maps-utils:0.4'
-    compile 'com.google.android.gms:play-services-maps:11.6.0'
-    compile 'com.google.firebase:firebase-database:11.6.0'
 
 
 }
