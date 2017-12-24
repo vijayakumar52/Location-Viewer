@@ -26,6 +26,7 @@ dependencies {
     compile getRootProject().ext.playServicesLib.mapsutils
     compile getRootProject().ext.playServicesLib.maps
     compile getRootProject().ext.firebaseLib.database
+    compile getRootProject().ext.extLib.prettyTime
     compile project(':Android-Utils')
 
 

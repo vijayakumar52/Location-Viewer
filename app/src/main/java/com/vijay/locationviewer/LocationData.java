@@ -1,5 +1,7 @@
 package com.vijay.locationviewer;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by vijay-3593 on 22/11/17.
  */
@@ -16,6 +18,10 @@ public class LocationData {
         this.latitude = latitude;
         this.longitude = longitude;
         this.time = time;
+    }
+
+    public LatLng getLatLng() {
+        return new LatLng(latitude, longitude);
     }
 
     public double getLatitude() {

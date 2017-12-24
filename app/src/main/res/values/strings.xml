@@ -10,11 +10,6 @@
     <string name="toast_no_format_exception">Please enter a valid time you bitch</string>
     <string name="ui_view_location">View Location</string>
     <string name="clear_map">Clear Map</string>
-    <string name="delete_half">Remove Half</string>
-    <string name="dialog_remove_location">Remove locations</string>
-    <string name="dialog_remove_no">No of locations</string>
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel">Cancel</string>
     <string name="toast_location_cleared">Locations cleared!</string>
     <string name="ui_duration">Duration</string>
     <string name="ui_change_duration">Duration</string>

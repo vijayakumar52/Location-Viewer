@@ -1,16 +1,11 @@
 package com.vijay.locationviewer;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,17 +20,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.MarkerManager;
 import com.google.maps.android.clustering.ClusterManager;
-import com.vijay.androidutils.DialogUtils;
 import com.vijay.androidutils.Logger;
 import com.vijay.androidutils.ToastUtils;
 import com.vijay.locationviewer.firebase.Constants;
 
 import org.json.JSONException;
+import org.ocpsoft.prettytime.PrettyTime;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, ValueEventListener, View.OnClickListener {
     private final String TAG = MapsActivity.class.getSimpleName();
@@ -45,17 +44,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     DatabaseReference locationReference;
 
     Button clearHistory;
-    FloatingActionButton fab;
     TextView count;
 
-    Coordinates coordinates;
+    ClusterData clusterData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.d(TAG, "onCreate called");
 
-        coordinates = new Coordinates();
+        clusterData = new ClusterData();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -63,12 +61,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         clearHistory = findViewById(R.id.remove_all);
-        fab = findViewById(R.id.fab);
         count = findViewById(R.id.count);
 
         clearHistory.setOnClickListener(this);
-        fab.setOnClickListener(this);
-
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         locationReference = database.getReference(Constants.LOCATIONS);
@@ -84,29 +79,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (id == R.id.remove_all) {
             long maxCount = Constants.MAX_COUNT;
             removeLocations(maxCount);
-        } else if (id == R.id.fab) {
-            String title = getResources().getString(R.string.dialog_remove_location);
-            String hint = getResources().getString(R.string.dialog_remove_no);
-            String prefillNo = "1";
-            String posText = getResources().getString(R.string.dialog_ok);
-            String negText = getResources().getString(R.string.dialog_cancel);
-            DialogUtils.getInstance().editTextDialog(this, title, hint, prefillNo, posText, negText, true, new MaterialDialog.SingleButtonCallback() {
-                @Override
-                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    if (which == DialogAction.POSITIVE) {
-                        Long value = null;
-                        try {
-                            String enteredText = ((TextInputLayout) dialog.getCustomView()).getEditText().getText().toString().trim();
-                            value = Long.parseLong(enteredText);
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
-                        }
-                        if (value != null) {
-                            removeLocations(value);
-                        }
-                    }
-                }
-            });
         }
     }
 
@@ -122,15 +94,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        List<Double[]> list = new ArrayList<>();
+        List<LocationData> list = new ArrayList<>();
         for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
             LocationData locationData = messageSnapshot.getValue(LocationData.class);
             if (locationData != null) {
-                Double[] coordinates = getLocationObject(locationData);
-                list.add(coordinates);
+                list.add(locationData);
             }
         }
-        coordinates.setCoordinates(list);
+        clusterData.setCoordinates(list);
         drawAllCluster();
 
     }
@@ -142,11 +113,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addChild(Object value) {
         if (value != null) {
-            Double[] location = getLocationObject((LocationData) value);
-            if (location != null) {
-                coordinates.addCoordinate(location);
-                updateCluster(location);
-            }
+            LocationData data = (LocationData) value;
+            clusterData.addCoordinate(data);
+            updateCluster(data);
         }
     }
 
@@ -159,14 +128,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng position = null;
         if (clusterManager != null) {
             clusterManager.clearItems();
-            List<Double[]> positions = coordinates.getCoordinates();
-            if (positions.size() > 0) {
-                for (int i = 0; i < positions.size(); i++) {
-                    Double[] locations = positions.get(i);
-                    LatLng latLng = new LatLng(locations[0], locations[1]);
-                    ClusterMarker marker = new ClusterMarker(latLng);
+            List<LocationData> locations = clusterData.getCoordinates();
+            if (locations.size() > 0) {
+                for (int i = 0; i < locations.size(); i++) {
+                    LocationData data = locations.get(i);
+                    ClusterMarker marker = new ClusterMarker(data.getLatLng(), getRelativeTime(data.getTime()), getTime(data.getTime()));
                     clusterManager.addItem(marker);
-                    position = latLng;
+                    position = data.getLatLng();
                 }
             }
 
@@ -179,16 +147,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    private String getTime(Long millis) {
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
+        return df.format(new Date(millis));
+    }
 
-    private void updateCluster(Double[] doubles) {
+    private String getRelativeTime(Long millis) {
+        PrettyTime prettyTime = new PrettyTime();
+        return prettyTime.format(new Date(millis));
+    }
+
+
+    private void updateCluster(LocationData locationData) {
         if (clusterManager != null) {
-            LatLng latLng = new LatLng(doubles[0], doubles[1]);
-            ClusterMarker marker = new ClusterMarker(latLng);
+            ClusterMarker marker = new ClusterMarker(locationData);
             clusterManager.addItem(marker);
 
             clusterManager.cluster();
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(locationData.getLatLng()));
 
         }
         updateCount();
@@ -196,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private void updateCount() {
-        count.setText("Size : " + coordinates.getCoordinates().size());
+        count.setText("Size : " + clusterData.getCoordinates().size());
     }
 
     @Override
@@ -223,6 +200,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
         clusterManager = new ClusterManager<>(this, mMap);
+        clusterManager.setRenderer(new CustomRendering(this, mMap, clusterManager));
         mMap.setOnCameraChangeListener(clusterManager);
 
         drawAllCluster();
