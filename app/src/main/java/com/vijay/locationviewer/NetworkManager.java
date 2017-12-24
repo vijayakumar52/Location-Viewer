@@ -56,4 +56,18 @@ public class NetworkManager {
         networkManager.execute();
     }
 
+    public void setDuration(Long timeInMillis, AsyncTaskListener listener) throws JSONException {
+        String url = "https://fcm.googleapis.com/fcm/send";
+
+        HashMap<String, String> header = getDefaultHeader();
+
+        JSONObject msgData = new JSONObject();
+        msgData.put(Constants.NOTIFICATION_DURATION, String.valueOf(timeInMillis));
+
+        JSONObject postParams = getDefaultNotificationContent(msgData);
+
+        NetworkRequest networkManager = new NetworkRequest(url, header, postParams.toString(), listener);
+        networkManager.execute();
+    }
+
 }

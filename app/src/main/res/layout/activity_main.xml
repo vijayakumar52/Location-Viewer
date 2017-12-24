@@ -17,9 +17,9 @@
             android:text="@string/ui_tracking" />
 
         <android.support.v7.widget.SwitchCompat
+            android:id="@+id/tracking_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tracking_switch"
             android:layout_weight="0.3" />
     </LinearLayout>
 
@@ -36,36 +36,75 @@
             android:text="@string/ui_interval" />
 
         <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/interval_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/interval_box"
             android:layout_weight="0.3" />
 
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_light"
-        android:textColor="@android:color/white"
-        android:layout_gravity="center"
-        android:padding="16dp"
-        android:id="@+id/change_interval"
-        android:text="@string/ui_change_interval"/>
+        android:weightSum="1">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="@string/ui_duration" />
 
-    <Button
-        android:layout_width="wrap_content"
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/duration_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_green_light"
-        android:textColor="@android:color/white"
-        android:layout_gravity="center"
-        android:padding="16dp"
         android:gravity="center"
-        android:layout_marginTop="16dp"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/change_interval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_margin="8dp"
+            android:layout_weight="0.5"
+            android:textAlignment="center"
+            android:background="@android:color/holo_blue_light"
+            android:textColor="@android:color/white"
+            android:text="@string/ui_change_interval" />
+
+        <Button
+            android:id="@+id/change_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_margin="8dp"
+            android:layout_weight="0.5"
+            android:textAlignment="center"
+            android:background="@android:color/holo_blue_light"
+            android:textColor="@android:color/white"
+            android:text="@string/ui_change_duration" />
+
+    </LinearLayout>
+
+    <Button
         android:id="@+id/view_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/holo_green_light"
+        android:gravity="center"
+        android:padding="16dp"
         android:text="@string/ui_view_location"
-        />
+        android:textColor="@android:color/white" />
 
 
 </LinearLayout>

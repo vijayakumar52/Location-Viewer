@@ -22,12 +22,15 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
     private final String TAG = MainActivity.class.getSimpleName();
     SwitchCompat switchCompat;
     AppCompatEditText intervalBox;
+    AppCompatEditText durationBox;
     Button changeIntervalButton;
+    Button changeDuration;
     Button viewLocation;
     NetworkManager networkManager;
 
     DatabaseReference toggleReference;
     DatabaseReference timeIntervalReference;
+    DatabaseReference durationReference;
     DatabaseReference deviceTokenReference;
     AsyncTaskListener firebaseCallback = new AsyncTaskListener() {
         @Override
@@ -63,7 +66,9 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         setContentView(R.layout.activity_main);
         switchCompat = findViewById(R.id.tracking_switch);
         intervalBox = findViewById(R.id.interval_box);
+        durationBox = findViewById(R.id.duration_box);
         changeIntervalButton = findViewById(R.id.change_interval);
+        changeDuration = findViewById(R.id.change_duration);
         viewLocation = findViewById(R.id.view_location);
 
 
@@ -102,6 +107,28 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
             }
         });
 
+        changeDuration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text = durationBox.getText().toString();
+                Long timeInMillis = null;
+                try {
+                    timeInMillis = Long.parseLong(text);
+                } catch (NumberFormatException e) {
+                    ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.toast_no_format_exception));
+                }
+                if (timeInMillis != null) {
+                    try {
+                        if (networkManager != null) {
+                            networkManager.setDuration(timeInMillis, firebaseCallback);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         viewLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,8 +142,11 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         toggleReference = database.getReference(Constants.TRACKING_STATUS);
         toggleReference.addValueEventListener(this);
 
-        timeIntervalReference = database.getReference(Constants.ALARM_INTERVAL);
+        timeIntervalReference = database.getReference(Constants.TRACKING_INFO).child((Constants.ALARM_INTERVAL));
         timeIntervalReference.addValueEventListener(this);
+
+        durationReference = database.getReference(Constants.TRACKING_INFO).child(Constants.DURATION);
+        durationReference.addValueEventListener(this);
 
         deviceTokenReference = database.getReference(Constants.DEVICE_TOKEN);
         deviceTokenReference.addValueEventListener(this);
@@ -142,6 +172,11 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
             if (timeInterval != null) {
                 intervalBox.setText(String.valueOf(timeInterval));
             }
+        } else if (Constants.DURATION.equals(key)) {
+            Long timeInterval = dataSnapshot.getValue(Long.class);
+            if (timeInterval != null) {
+                durationBox.setText(String.valueOf(timeInterval));
+            }
         } else if (Constants.DEVICE_TOKEN.equals(key)) {
             String token = dataSnapshot.getValue(String.class);
             if(token != null && !"".equals(token)) {
@@ -163,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         toggleReference.removeEventListener(this);
         timeIntervalReference.removeEventListener(this);
         deviceTokenReference.removeEventListener(this);
+        durationReference.removeEventListener(this);
 
         Logger.d(TAG, "Firebase event listeners removed");
     }
