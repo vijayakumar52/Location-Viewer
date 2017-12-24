@@ -1,5 +1,7 @@
 package com.vijay.locationviewer;
 
+import com.vijay.androidutils.AsyncTaskListener;
+import com.vijay.androidutils.NetworkRequest;
 import com.vijay.locationviewer.firebase.Constants;
 
 import org.json.JSONException;
