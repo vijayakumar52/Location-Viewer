@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "938109424905-28jrmsgssl19nh08ef8d0p0fd6b96e95.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vijay.locationtracker",
+            "certificate_hash": "a83346c5fb3fe7c1e770b903ae2aee7149a56a61"
+          }
+        },
+        {
           "client_id": "938109424905-2j196bmurvagofq4itd339bkue9ta328.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -58,6 +66,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "938109424905-p1bjb286crg5fda2b54sbabp0pdip0ri.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vijay.locationviewer",
+            "certificate_hash": "a83346c5fb3fe7c1e770b903ae2aee7149a56a61"
+          }
+        },
         {
           "client_id": "938109424905-1hfjm1hoh4rg54214s479g5fr9ip955r.apps.googleusercontent.com",
           "client_type": 1,
