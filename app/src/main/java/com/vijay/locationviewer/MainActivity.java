@@ -175,12 +175,12 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
         } else if (Constants.ALARM_INTERVAL.equals(key)) {
             Long timeInterval = dataSnapshot.getValue(Long.class);
             if (timeInterval != null) {
-                intervalBox.setText(String.valueOf(timeInterval));
+                intervalBox.setText(String.valueOf(timeInterval/1000));
             }
         } else if (Constants.DURATION.equals(key)) {
             Long timeInterval = dataSnapshot.getValue(Long.class);
             if (timeInterval != null) {
-                durationBox.setText(String.valueOf(timeInterval));
+                durationBox.setText(String.valueOf(timeInterval/1000));
             }
         } else if (Constants.DEVICE_TOKEN.equals(key)) {
             String token = dataSnapshot.getValue(String.class);
