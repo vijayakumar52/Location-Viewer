@@ -6,9 +6,7 @@
     <string name="notification_failed">Unable to send notification!</string>
     <string name="notification_error">Error occurred while sending notification</string>
     <string name="response_null">Response null</string>
-    <string name="ui_change_interval">Interval</string>
     <string name="toast_no_format_exception">Please enter a valid time you bitch</string>
-    <string name="ui_view_location">View Location</string>
     <string name="clear_map">Clear Map</string>
     <string name="toast_location_cleared">Locations cleared!</string>
     <string name="ui_duration">Duration</string>

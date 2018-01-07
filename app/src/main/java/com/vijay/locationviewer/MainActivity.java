@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,9 +26,9 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
     SwitchCompat switchCompat;
     AppCompatEditText intervalBox;
     AppCompatEditText durationBox;
-    Button changeIntervalButton;
-    Button changeDuration;
-    Button viewLocation;
+    ImageView changeIntervalButton;
+    ImageView changeDuration;
+    ImageView viewLocation;
     NetworkManager networkManager;
 
     DatabaseReference toggleReference;
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
                 Long timeInMillis = null;
                 try {
                     timeInMillis = Long.parseLong(text);
+                    timeInMillis = timeInMillis * 1000;
                 } catch (NumberFormatException e) {
                     ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.toast_no_format_exception));
                 }
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements ValueEventListene
                 Long timeInMillis = null;
                 try {
                     timeInMillis = Long.parseLong(text);
+                    timeInMillis = timeInMillis * 1000;
                 } catch (NumberFormatException e) {
                     ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.toast_no_format_exception));
                 }

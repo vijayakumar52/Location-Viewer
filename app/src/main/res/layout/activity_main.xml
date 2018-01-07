@@ -3,62 +3,97 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         android:weightSum="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:padding="8dp"
+            android:textStyle="bold"
             android:text="@string/ui_tracking" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/tracking_switch"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3" />
+            android:layout_marginRight="4dp"
+            android:layout_weight="1"
+            android:padding="4dp" />
     </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:gravity="center"
+        android:padding="8dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:padding="8dp"
+            android:textStyle="bold"
             android:text="@string/ui_interval" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/interval_box"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/bg_edittext"
+            android:padding="4dp" />
+
+        <ImageView
+            android:id="@+id/change_interval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3" />
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:padding="4dp"
+            android:src="@drawable/send" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:gravity="center"
         android:weightSum="1">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:padding="8dp"
+            android:textStyle="bold"
             android:text="@string/ui_duration" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/duration_box"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:layout_weight="1"
+            android:padding="4dp" />
+
+        <ImageView
+            android:id="@+id/change_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3" />
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:padding="4dp"
+            android:src="@drawable/send" />
 
     </LinearLayout>
 
@@ -68,43 +103,22 @@
         android:gravity="center"
         android:weightSum="1">
 
-        <Button
-            android:id="@+id/change_interval"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_margin="8dp"
-            android:layout_weight="0.5"
-            android:textAlignment="center"
-            android:background="@android:color/holo_blue_light"
-            android:textColor="@android:color/white"
-            android:text="@string/ui_change_interval" />
-
-        <Button
-            android:id="@+id/change_duration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_margin="8dp"
-            android:layout_weight="0.5"
-            android:textAlignment="center"
-            android:background="@android:color/holo_blue_light"
-            android:textColor="@android:color/white"
-            android:text="@string/ui_change_duration" />
 
     </LinearLayout>
 
-    <Button
+    <ImageView
         android:id="@+id/view_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:background="@android:color/holo_green_light"
-        android:gravity="center"
         android:padding="16dp"
-        android:text="@string/ui_view_location"
-        android:textColor="@android:color/white" />
+        android:src="@drawable/map" />
 
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
 
 </LinearLayout>
